@@ -1,0 +1,19 @@
+---
+- name: Create Namespaces for Users
+  hosts: localhost
+  gather_facts: false
+  vars:
+    users:
+      - user1
+      - user2
+      - user3
+      # Add more users as needed
+
+  tasks:
+    - name: Create Namespaces
+      community.general.rancher_project:
+        name: "{{ item }}"
+        cluster_api_url: "https://your-rancher-api-url/v3"
+        token_key: "your-rancher-api-token-key"
+        token_secret: "your-rancher-api-token-secret"
+      with_items: "{{ users }}"
