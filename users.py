@@ -22,7 +22,7 @@ def create_user(user: UserCreate):
         create_folder_command = f'mkdir -p {nfs_share}/{username} && chown {username}:{username} {nfs_share}/{username}'
 
         subprocess.run(create_user_command, shell=True, check=True)
-        subprocess.run(create_folder_command, shell=True, check=True)
+        subprocess.run(create_folder_command, shell=True, check=True) 
 
         return {'message': f"User '{username}' created successfully."}
 
