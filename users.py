@@ -33,6 +33,33 @@ def create_user(user: UserCreate):
         return {'message': f"Failed to create user: {e}"}
 
 
+class UsersList(BaseModel):
+    users: list[UserCreate]
+
+
+@app.post('/users/batch')
+def create_users(users_list: UsersList):
+    users = users_list.users
+    success_count = 0
+    failure_count = 0
+    result_messages = []
+
+    for user in users:
+        response = create_user(user)
+        if 'message' in response:
+            if 'created successfully' in response['message']:
+                success_count += 1
+            else:
+                failure_count += 1
+            result_messages.append(response['message'])
+
+    return {
+        'success_count': success_count,
+        'failure_count': failure_count,
+        'result_messages': result_messages
+    }
+
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)
