@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import subprocess
 import uvicorn
+import crypt
 from typing import List
 
 app = FastAPI()
@@ -20,15 +21,17 @@ def create_user(user: UserCreate):
     # NFS share settings
     nfs_share = '/mnt/nfs_share/users'
 
+    encrypted_password = crypt.crypt(password)
+
     try:
         # Create the user and home folder on the NFS share
-        create_user_command = f'useradd -m -p {password} -d {nfs_share}/{username} {username}'
+        create_user_command = f'useradd -m -p {encrypted_password} -d {nfs_share}/{username} {username}'
         create_folder_command = f'mkdir -p {nfs_share}/{username} && chown {username}:{username} {nfs_share}/{username}'
 
         subprocess.run(create_user_command, shell=True, check=True)
         subprocess.run(create_folder_command, shell=True, check=True)
 
-        return {'message': f"User '{username}' created successfully."}
+        return {'message': f"User '{username} created successfully."}
 
     except subprocess.CalledProcessError as e:
         return {'message': f"Failed to create user: {e}"}
