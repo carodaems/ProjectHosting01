@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import subprocess
-import requests
+import uvicorn
+from typing import List
 
 app = FastAPI()
 
@@ -34,7 +35,7 @@ def create_user(user: UserCreate):
 
 
 class UsersList(BaseModel):
-    users: list[UserCreate]
+    users: List[UserCreate]
 
 
 @app.post('/users/batch')
@@ -61,5 +62,4 @@ def create_users(users_list: UsersList):
 
 
 if __name__ == '__main__':
-    import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)
